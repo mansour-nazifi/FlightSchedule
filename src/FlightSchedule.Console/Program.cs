@@ -37,7 +37,7 @@ namespace FlightSchedule.ConsoleApp
             .ConfigureServices((hostContext, services) =>
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer("Server=.;Database=FlightSchedule.Temp;User ID=sa;Password=123123;MultipleActiveResultSets=true;TrustServerCertificate=True"));
+                options.UseSqlServer("Server=.;Database=FlightSchedule.Temp;User ID=sa;Password=***;MultipleActiveResultSets=true;TrustServerCertificate=True"));
 
                 services.AddScoped<IUnitOfWork, UnitOfWork>();
 

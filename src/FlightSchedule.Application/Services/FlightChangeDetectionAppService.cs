@@ -14,49 +14,49 @@ namespace FlightSchedule.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<List<FlightChangeDto>> DetectChangesAsync1(DateTime startDate, DateTime endDate, int agencyId)
-        {
-            var changes = new List<FlightChangeDto>();
+        //public async Task<List<FlightChangeDto>> DetectChangesAsync1(DateTime startDate, DateTime endDate, int agencyId)
+        //{
+        //    var changes = new List<FlightChangeDto>();
 
-            var subscriptions = await _unitOfWork.Subscriptions.GetSubscriptionsByAgencyIdAsync(agencyId);
-            var routes = await GetRoutesInRangeAsync(startDate, endDate, subscriptions);
-            var flights = routes.SelectMany(x => x.Flights).ToList();
+        //    var subscriptions = await _unitOfWork.Subscriptions.GetSubscriptionsByAgencyIdAsync(agencyId);
+        //    var routes = await GetRoutesInRangeAsync(startDate, endDate, subscriptions);
+        //    var flights = routes.SelectMany(x => x.Flights).ToList();
 
-            var airlines = flights.GroupBy(x => x.AirlineId);
+        //    var airlines = flights.GroupBy(x => x.AirlineId);
 
-            var tolerance = TimeSpan.FromMinutes(30);
-            var day = 7;
+        //    var tolerance = TimeSpan.FromMinutes(30);
+        //    var day = 7;
 
-            object lockObj = new object();
+        //    object lockObj = new object();
 
-            Parallel.ForEach(airlines, airline =>
-            {
-                Parallel.ForEach(airline, flight =>
-                {
-                    var hasPreviousWeek = HasFlight(airline, flight, -day, tolerance);
-                    if (!hasPreviousWeek)
-                    {
-                        lock (lockObj)
-                        {
-                            changes.Add(FlightToChangeDto(flight, "New"));
-                        }
-                    }
-                    else
-                    {
-                        var nextWeek = !HasFlight(airline, flight, day, tolerance);
-                        if (nextWeek)
-                        {
-                            lock (lockObj)
-                            {
-                                changes.Add(FlightToChangeDto(flight, "Discontinued"));
-                            }
-                        }
-                    }
-                });
-            });
+        //    Parallel.ForEach(airlines, airline =>
+        //    {
+        //        Parallel.ForEach(airline, flight =>
+        //        {
+        //            var hasPreviousWeek = HasFlight(airline, flight, -day, tolerance);
+        //            if (!hasPreviousWeek)
+        //            {
+        //                lock (lockObj)
+        //                {
+        //                    changes.Add(FlightToChangeDto(flight, "New"));
+        //                }
+        //            }
+        //            else
+        //            {
+        //                var nextWeek = !HasFlight(airline, flight, day, tolerance);
+        //                if (nextWeek)
+        //                {
+        //                    lock (lockObj)
+        //                    {
+        //                        changes.Add(FlightToChangeDto(flight, "Discontinued"));
+        //                    }
+        //                }
+        //            }
+        //        });
+        //    });
 
-            return changes;
-        }
+        //    return changes;
+        //}
 
         public async Task<List<FlightChangeDto>> DetectChangesAsync(DateTime startDate, DateTime endDate, int agencyId)
         {
